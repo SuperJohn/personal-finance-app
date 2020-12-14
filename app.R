@@ -8,6 +8,7 @@
 #
 
 library(shiny)
+library(DT)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -27,7 +28,9 @@ ui <- fluidPage(
 
         # Show a plot of the generated distribution
         mainPanel(
-           plotOutput("distPlot")
+           plotOutput("distPlot"),
+           h2("Transactions Data"),
+           DT::dataTableOutput("mytable")
         )
     )
 )
@@ -42,6 +45,10 @@ server <- function(input, output) {
 
         # draw the histogram with the specified number of bins
         hist(x, breaks = bins, col = 'darkgray', border = 'white')
+    })
+    
+    output$mytable = DT::renderDataTable({
+        head(transactions)
     })
 }
 
