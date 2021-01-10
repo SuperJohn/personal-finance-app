@@ -5,5 +5,5 @@
 # Developed by DATALEAP: http://dataleap.io                                  #
 ##############################################################################
 
-dashboardName = HTML("<strong>KP</strong> Property<strong>Smart</strong>") # Dashboard name (shows up in app)
-version = "0.8.1"
+dashboardName = HTML("Houghton Personal Finance") # Dashboard name (shows up in app)
+version = "0.1"
