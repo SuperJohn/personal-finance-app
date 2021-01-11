@@ -1,0 +1,142 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r, warning=FALSE, message=FALSE}
+suppressMessages(library(dplyr))
+suppressMessages(library(readr))
+suppressMessages(library(lubridate))
+suppressMessages(library(stringr))
+suppressMessages(library(ggplot2))
+suppressMessages(library(janitor))
+```
+
+```{r, warning=FALSE, message=FALSE}
+setwd("~/Documents/dev/personal_finance")
+
+# https://stackoverflow.com/questions/47243249/left-join-dplyr-the-next-available-date
+
+chase_transactions <- readr::read_delim("data/Tiller Personal Finance - Transactions.tsv", "\t", escape_double = FALSE, locale = locale(), trim_ws = TRUE) %>% 
+  readr::type_convert() %>%
+  mutate(Date = mdy(Date), Month = mdy(Month), Week = mdy(Week), `Categorized Date` = mdy(`Categorized Date`), `Date Added` = mdy(`Date Added`), Category = factor(Category)) %>%
+  mutate(Amount = stringr::str_remove(Amount, regex("\\$", ignore_case = TRUE))) %>%
+  mutate(Amount = parse_number(Amount), Account = factor(Account), `Account #` = factor(`Account #`)) %>%
+  dplyr::select(c('Date', 'Description', 'Category', 'Amount')) %>%
+  clean_names() %>%
+  tibble::rowid_to_column("chase_id")
+  
+
+head(chase_transactions, 10)
+
+john_amazon_items <- read_csv("data/amazon_transactions_2021.csv")
+sarah_amazon_items <- read_csv("data/sarah_amazon_items.csv")
+
+clean_amazon_items <- function(df){
+  df %>%
+    mutate(`Order Date` = as.Date(parse_date_time(`Order Date`, "m/d/y"))) %>%
+    mutate(`Shipment Date` = as.Date(parse_date_time(`Shipment Date`, "m/d/y"))) %>%
+    mutate(`Item Total` = -as.numeric(gsub("\\$", "", `Item Total`))) %>%
+    mutate(`Category` = as.factor(`Category`)) %>%
+    select(c("Order ID", "Item Total", "Order Date", "Shipment Date", "Category", "Title")) %>%
+    clean_names() %>%
+    rename(amount = item_total)
+  
+}
+
+amazon_transactions <- bind_rows(
+  clean_amazon_items(john_amazon_items),
+  clean_amazon_items(sarah_amazon_items)
+  )
+
+head(amazon_transactions, 10)
+
+amazon_orders <- amazon_transactions %>%
+  group_by(order_date, shipment_date, order_id) %>%
+  summarise(amount = sum(amount))
+
+head(amazon_orders, 10)
+
+```
+
+
+
+# Categorize Amazon Data by Order_Id
+```{r}
+
+# for each order_id
+# first check for trans_date == order_date, flag as 'is_order_date', 'trans_date_diff' = 0
+# then look for trans_date == shipping_date, flag as 'is_shipping_date', 'trans_date_diff' = 0
+# else look for closest date with transaction having that amount from amazon, flag as 'is_closest'
+# if flag == 'is_closest', then 'trans_date_diff'
+
+```
+
+# Visualize Amazon Banking Records
+```{r, warning=FALSE, message=FALSE}
+
+# clean banking transactions from tiller sheet
+chase_trans <- chase_transactions %>% 
+  filter(category == "Amazon") %>% 
+  arrange(date) %>% 
+  group_by(date) %>%
+  summarise(amount = sum(amount)) %>%
+  ungroup() %>%
+  mutate(cum_amt = cumsum(-amount)) %>%
+  mutate(source = "chase_date")
+
+head(chase_trans,10)
+
+# define function to clean amazon item history report
+get_amazon_data <- function(df, source){
+  df %>%
+  rename(date = source) %>%
+  filter(date >= min(chase_trans$date)) %>%
+  arrange(date) %>%
+  group_by(date) %>%
+  summarise(amount = sum(amount)) %>%
+  ungroup() %>%
+  mutate(cum_amt = cumsum(-amount)) %>%
+  mutate(source = source) 
+}
+
+test <- get_amazon_data(amazon_transactions,  "shipment_date")
+
+# combine data by shipment_date and order_date to visualize together
+amazon_trans <- bind_rows(
+  get_amazon_data(amazon_transactions, "shipment_date"),
+  get_amazon_data(amazon_transactions, "order_date")
+)
+
+head(amazon_trans)
+
+# define visualization in ggplot
+line_charter <- function(df){
+  ggplot(df, aes(x = date, y = cum_amt, colour=source)) + 
+  geom_line() 
+}
+
+# set datasets to visualize
+chase_vs_amazon <- bind_rows(chase_trans, amazon_trans)
+shipped_vs_ordered <- amazon_trans
+
+# visualize results
+line_charter(chase_vs_amazon)
+line_charter(shipped_vs_ordered)
+
+```
+# Join Amazon Transaction Data
+```{r, warning=FALSE, message=FALSE}
+setwd("~/Documents/dev/personal_finance")
+
+chase_transactions %>%
+  filter(category == 'Amazon') %>%
+  left_join(amazon_orders, by = "amount") %>%
+  select(chase_id, amount, date, order_date, shipment_date,  order_id)
+
+chase_transactions %>%
+  filter(category == 'Amazon') %>%
+  left_join(amazon_transactions, by = "amount") %>%
+  select(chase_id, amount, date, order_date, shipment_date,  order_id)
+
+```

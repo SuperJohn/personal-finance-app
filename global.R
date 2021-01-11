@@ -42,7 +42,20 @@ transactions <- read_delim("data/Tiller Personal Finance - Transactions.tsv", "\
   mutate(Date = mdy(Date), Month = mdy(Month), Week = mdy(Week), `Categorized Date` = mdy(`Categorized Date`), `Date Added` = mdy(`Date Added`), Category = factor(Category)) %>%
   mutate(Amount = str_remove(Amount, regex("\\$", ignore_case = TRUE))) %>%
   mutate(Amount = parse_number(Amount), Account = factor(Account), `Account #` = factor(`Account #`)) %>% 
-  dplyr::select(c('Date', 'Description', 'Category', 'Amount'))
+  dplyr::select(c('Date', 'Amount', 'Category', 'Description')) %>%
+  janitor::clean_names()
+
+amazon_transaction_history <- read_csv("data/amazon_transactions_2021.csv") %>%
+  mutate(`Order Date` = as.Date(parse_date_time(`Order Date`, "m/d/y"))) %>%
+  mutate(`Shipment Date` = as.Date(parse_date_time(`Shipment Date`, "m/d/y"))) %>%
+  mutate(`Item Total` = -as.numeric(gsub("\\$", "", `Item Total`))) %>%
+  mutate(`Category` = as.factor(`Category`)) %>%
+  select(c("Order ID", "Item Total", "Order Date", "Shipment Date", "Category", "Title")) %>%
+  clean_names()
+
+amazon_orders <- amazon_transaction_history %>%
+  group_by(order_date, shipment_date, order_id) %>%
+  summarise(item_total = sum(item_total))
 
 # Source scripts ----------------------------------------------------------
 # source("functions/dataGrabber.R", local = TRUE)

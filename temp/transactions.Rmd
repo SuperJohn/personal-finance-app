@@ -1,0 +1,49 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+suppressMessages(library(dplyr))
+suppressMessages(library(readr))
+suppressMessages(library(lubridate))
+suppressMessages(library(stringr))
+suppressMessages(library(ggplot2))
+```
+
+```{r, warning=FALSE, message=FALSE}
+
+transactions <- readr::read_delim("../data/Tiller Personal Finance - Transactions.tsv", "\t", escape_double = FALSE, locale = locale(), trim_ws = TRUE) %>% 
+  
+  readr::type_convert() %>%
+  
+  mutate(Date = mdy(Date), Month = mdy(Month), Week = mdy(Week), `Categorized Date` = mdy(`Categorized Date`), `Date Added` = mdy(`Date Added`), Category = factor(Category)) %>%
+  
+  mutate(Amount = stringr::str_remove(Amount, regex("\\$", ignore_case = TRUE))) %>%
+  
+  mutate(Amount = parse_number(Amount), Account = factor(Account), `Account #` = factor(`Account #`)) %>%
+  
+  dplyr::select(c('Date', 'Description', 'Category', 'Amount'))
+```
+
+```{r}
+head(transactions)
+```
+
+```{r}
+
+data <- transactions %>% 
+  group_by(Category, Date) %>%
+  summarise(Amount = sum(Amount), cumAmt = cumsum(Amount))
+
+head(data)
+
+ggplot(data
+            , aes(x = Date, y = cumAmt, group=Category)
+            , geom = "line")
+```
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+

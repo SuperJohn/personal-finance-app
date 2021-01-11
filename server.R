@@ -1,18 +1,25 @@
 shinyServer(function(input, output, session) {
     
-    output$distPlot <- renderPlot({
-      # generate bins based on input$bins from ui.R
-      x    <- faithful[, 2]
-      bins <- seq(min(x), max(x), length.out = input$bins + 1)
-      
-      # draw the histogram with the specified number of bins
-      hist(x, breaks = bins, col = 'darkgray', border = 'white')
+    # CHASE BANKING TRANSACTIONS
+    output$mytable = DT::renderDataTable({
+      datatable(transactions, filter = 'top', width = "1500px", rownames = FALSE, 
+                options = list(scrollX = TRUE), 
+                )
     })
     
-    output$mytable = DT::renderDataTable({
-      head(transactions)
+    # AMAZON TRANSACTIONS
+    output$amazonTransactions = DT::renderDataTable({
+      datatable(amazon_transaction_history, filter = 'top', width = "1500px", rownames = FALSE, 
+                options = list(scrollX = TRUE), 
+      )
     })
-  
+    
+    # AMAZON ORDERS
+    output$amazonOrders = DT::renderDataTable({
+      datatable(amazon_orders, filter = 'top', width = "1500px", rownames = FALSE, 
+                options = list(scrollX = TRUE), 
+      )
+    })
   
   })
   
