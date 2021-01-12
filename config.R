@@ -5,5 +5,5 @@
 # Developed by DATALEAP: http://dataleap.io                                  #
 ##############################################################################
 
-dashboardName = HTML("Personal Finance") # Dashboard name (shows up in app)
+dashboardName = HTML("Balance") # Dashboard name (shows up in app)
 version = " v0.1"

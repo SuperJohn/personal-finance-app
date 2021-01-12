@@ -1,21 +1,10 @@
-column(width = 12,
-  fluidRow(
-    # A static infoBox
-    infoBox("New Orders", 10 * 2, icon = icon("credit-card")),
-    # Dynamic infoBoxes
-    infoBoxOutput("progressBox"),
-    infoBoxOutput("approvalBox")
-  ), 
 
-  # infoBoxes with fill=TRUE
-  fluidRow(
-    infoBox("New Orders", 10 * 2, icon = icon("credit-card"), fill = TRUE),
-    infoBoxOutput("progressBox2"),
-    infoBoxOutput("approvalBox2")
-  ), 
+mainPanel(
   
-  fluidRow(
-    # Clicking this will increment the progress amount
-    box(width = 4, actionButton("count", "Increment progress"))
-  )
+  h2("Income Events"),
+  plotOutput("plot_income_events_last6mo"), 
+  
+  h2("Income Transactions"),
+  DT::dataTableOutput("incomeTransactions")
+
 )
