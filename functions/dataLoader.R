@@ -1,8 +1,10 @@
-
+### TILLER CATEGORIES ###
 category_lookup_table <- tiller_categories_data %>%
   clean_names() %>% 
   select(category, group, type)
 
+
+### TILLER TRANSACTIONS ###
 transactions <- tiller_transactions %>% 
   readr::type_convert() %>%
   mutate(Date = mdy(Date), Month = mdy(Month), Week = mdy(Week), `Categorized Date` = mdy(`Categorized Date`), `Date Added` = mdy(`Date Added`), Category = factor(Category)) %>%
@@ -12,6 +14,8 @@ transactions <- tiller_transactions %>%
   janitor::clean_names() %>%
   left_join(category_lookup_table, by = "category")
 
+
+### AMAZON TRANSACTIONS ###
 clean_amazon_items <- function(df){
   df %>%
     mutate(`Order Date` = as.Date(parse_date_time(`Order Date`, "m/d/y"))) %>%
@@ -33,6 +37,7 @@ amazon_orders <- amazon_transactions %>%
   group_by(order_date, shipment_date, order_id) %>%
   summarise(amount = sum(amount))
 
+### INCOME TRANSACTIONS VIEW ###
 income_transaction_history <- transactions %>% 
   filter(type == "Income")
 
