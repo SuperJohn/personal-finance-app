@@ -1,10 +1,11 @@
 # Budget Tree-Chart
 
-treeData <- budgets_long %>%
-  filter(date == max(date))
+budgetTreeData <- budgets_long %>%
+  filter(date == max(date)) %>%
+  filter(type != "Income")
 
 output$plotBudgetTree = shiny::renderPlot({
-    treemap(treeData,
+    treemap(budgetTreeData,
             title = paste("Budgets", ", ", max(treeData$date)), 
             index=c("group", "category"),
             vSize="amount",
@@ -17,7 +18,6 @@ output$plotBudgetTree = shiny::renderPlot({
               c("right", "bottom")
             )  
     )
-  
 })
 
 # BUDGET WIDE

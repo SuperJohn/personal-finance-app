@@ -29,7 +29,6 @@ tiller_transactions <- read_delim("data/Tiller Personal Finance - Transactions.t
 john_amazon_items <- read_csv("data/amazon_transactions_2021.csv")
 sarah_amazon_items <- read_csv("data/sarah_amazon_items.csv")
 
-
 source("functions/dataLoader.R", local = TRUE)
 
 # Source scripts ----------------------------------------------------------

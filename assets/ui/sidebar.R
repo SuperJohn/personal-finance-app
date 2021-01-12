@@ -6,6 +6,7 @@ sidebar <- dashboardSidebar(
     menuItem(text = "Amazon Transactions", tabName = "amazonTransactionsView", icon = icon("dashboard")),
     menuItem(text = "Income View", tabName = "incomeView", icon = icon("th")),
     menuItem(text = "Budget View", tabName = "budgetView", icon = icon("building"), badgeLabel = "new", badgeColor = "green"),
+    menuItem(text = "Category View", tabName = "categoryView", icon = icon("building"), badgeLabel = "new", badgeColor = "green"),
     menuItem('Dashboard Gallery', tabName = 'y', icon = icon('line-chart'),
              menuItem('Dashboard a',
                       tabName = 'a',

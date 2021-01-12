@@ -28,6 +28,14 @@ transactions <- tiller_transactions %>%
   janitor::clean_names() %>%
   left_join(category_lookup_table, by = "category")
 
+transactions_monthly <- transactions %>% 
+  filter(type == "Expense") %>%
+  mutate(month = month(as.Date(date)), year = year(date)) %>%
+  mutate(year_month = paste0(year, "-", month)) %>%
+  group_by(group, category, year_month) %>% 
+  summarise(amount = sum(amount)) %>%
+  filter(year_month >= "2020-1")
+  
 
 ### AMAZON TRANSACTIONS ###
 clean_amazon_items <- function(df){
