@@ -1,3 +1,6 @@
+# setwd("~/Documents/dev/personal_finance")
+# source("global.R", local = TRUE)
+
 ### TILLER CATEGORIES & BUDGETS ###
 budgets_long <- tiller_categories_data %>%
   select(-`Hide From Reports`) %>%
@@ -53,5 +56,9 @@ income_transaction_history <- transactions %>%
   filter(type == "Income")
 
 income_events_last6mo <- income_transaction_history %>%
-  filter(date >= as.Date("2020-01-01"))
+  mutate(month = month(as.Date(date)), year = year(date)) %>%
+  mutate(year_month = paste0(year, "-", month)) %>%
+  group_by(group, category, year_month) %>% 
+  summarise(amount = sum(amount)) %>%
+  filter(year_month >= "2020-1")
 

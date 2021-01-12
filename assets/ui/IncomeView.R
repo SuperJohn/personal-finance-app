@@ -10,19 +10,12 @@ mainPanel(
 
   fluidRow(
     ### INCOME CHART ###
-    box(title = "Income Events", status = "primary", solidHeader = TRUE, width = 8, 
+    box(title = "Income Events", status = "primary", solidHeader = TRUE, width = 12, 
         selectInput("incomeChartSelect", label = "Select Income Chart Type",
                     choices = c("Income Events YTD", "Total Income YTD", "Income By Source YTD"),
                     selected = "Income Events YTD", multiple = FALSE,
                     width = "100%"),
       plotOutput("plot_income_events_last6mo")
-      ),
-    
-    ### SLIDER & RIGHT CONTENT ###
-    box(title = "Test Input", status = "primary", solidHeader = TRUE, width = 4,
-      "Box content here", br(), "More box content",
-      sliderInput("slider", "Slider input:", 1, 100, 50),
-      textInput("text", "Text input:")
       )
     ), 
    

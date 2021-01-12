@@ -16,8 +16,8 @@ output$approvalBox <- renderInfoBox({
 
 ### INCOME CHART ###
 col_charter <- function(df){
-  ggplot(df, aes(x = date, y = amount, colour=category)) + 
-    geom_col() 
+  s <- ggplot(df, aes(x = year_month, y = amount, fill = category)) + theme(legend.position = "bottom")
+  s + geom_bar(position="stack", stat="identity")
 }
 
 output$plot_income_events_last6mo = shiny::renderPlot({

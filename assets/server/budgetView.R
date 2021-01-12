@@ -4,8 +4,8 @@ treeData <- budgets_long %>%
   filter(date == max(date))
 
 output$plotBudgetTree = shiny::renderPlot({
-  d3tree2(
     treemap(treeData,
+            title = paste("Budgets", ", ", max(treeData$date)), 
             index=c("group", "category"),
             vSize="amount",
             vColor="type",
@@ -17,8 +17,7 @@ output$plotBudgetTree = shiny::renderPlot({
               c("right", "bottom")
             )  
     )
-    , rootname = paste0("Budget ", max(data$date))
-  )
+  
 })
 
 # BUDGET WIDE
