@@ -2,7 +2,7 @@
 ### TAB-PANELS ###
 output$progressBox <- renderInfoBox({
   infoBox(
-    "Income Past 30 Days", paste0("$", 10999 + input$count), icon = icon("list"),
+    "Income Past 30 Days", "$174,031", icon = icon("list"),
     color = "purple"
   )
 })

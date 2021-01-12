@@ -3,27 +3,18 @@
 suppressMessages(library(shiny))            # Required to build and run shiny applications
 suppressMessages(library(shinydashboard))   # Required to create dashboard based on AdminLTE
 suppressMessages(library(shinyBS))          # Required for Bootstrap javascript
-suppressMessages(library(dplyr))             # Required for data manipulation & processing
 suppressMessages(library(shinyjs))          # Required for javascript & shiny integration
 suppressMessages(library(highcharter))      # Required for chart generation
 suppressMessages(library(leaflet))          # Required for leaflet map generation
 suppressMessages(library(DT))               # Required for data table generation
-suppressMessages(library(stringi))          # Required for string manipulation
 suppressMessages(library(REdaS))            # Required to convert degrees to radians for location selection
-suppressMessages(library(tidyr))            # Required for table nesting
-suppressMessages(library(readr))            # Required for table nesting
-
-# Load required packages new
 suppressMessages(library(janitor))
 suppressMessages(library(lubridate))
 suppressMessages(library(hms))
-suppressMessages(library(tidyr))
-suppressMessages(library(stringr))
-suppressMessages(library(readr))
-suppressMessages(library(forcats))
-suppressMessages(library(dplyr))
-suppressMessages(library(tibble))
-suppressMessages(library(ggplot2))
+suppressMessages(library(reshape2))
+suppressMessages(library(tidyverse))
+suppressMessages(library(treemap))
+suppressMessages(library(d3treeR))
 
 # Options -----------------------------------------------------------------
 options(scipen = 999)             # Disables scientific notation

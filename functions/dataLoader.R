@@ -1,6 +1,17 @@
-### TILLER CATEGORIES ###
-category_lookup_table <- tiller_categories_data %>%
-  clean_names() %>% 
+### TILLER CATEGORIES & BUDGETS ###
+budgets_long <- tiller_categories_data %>%
+  select(-`Hide From Reports`) %>%
+  melt(id = c("Category", "Group", "Type"), variable.name = "date", value.name = "amount") %>%
+  mutate(date = as.character(date)) %>%
+  mutate(date = parse_date(date, format = "%m/%d/%Y")) %>%
+  mutate(amount = parse_number(str_remove(amount, regex("\\$", ignore_case = TRUE)))) %>%
+  clean_names()
+
+budgets_wide <- budgets_long %>%
+  dcast(category + group + type ~ date) %>%
+  arrange(-`2020-12-01`)
+
+category_lookup_table <- budgets_long %>%
   select(category, group, type)
 
 

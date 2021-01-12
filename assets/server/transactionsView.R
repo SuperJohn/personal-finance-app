@@ -1,7 +1,13 @@
 # CHASE BANKING TRANSACTIONS
 output$mytable = DT::renderDataTable({
   datatable(transactions, filter = 'top', width = "1500px", rownames = FALSE, 
-            options = list(scrollX = TRUE), 
+            options = list(scrollX = TRUE, 
+                           autoWidth = TRUE,
+                           columnDefs = list(
+                             list(width = '300px', targets = c(3)),
+                             list(width = '50px', targets = c(0,1))
+                             )
+                           ), 
   )
 })
 

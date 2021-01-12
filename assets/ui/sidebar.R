@@ -5,6 +5,7 @@ sidebar <- dashboardSidebar(
     menuItem(text = "Transactions View", tabName = "transactionsView", icon = icon("globe")),
     menuItem(text = "Amazon Transactions", tabName = "amazonTransactionsView", icon = icon("globe")),
     menuItem(text = "Income View", tabName = "incomeView", icon = icon("building")),
+    menuItem(text = "Budget View", tabName = "budgetView", icon = icon("building")),
     menuItem(text = "Summary View", tabName = "occupancy", icon = icon("briefcase")),
     menuItem(text = "Monthly Budgets", tabName = "riskManagement", icon = icon("bomb")),
     menuItem(text = "Dev Ref", tabName = "devRef", icon = icon("sticky-note")), 

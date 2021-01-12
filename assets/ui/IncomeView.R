@@ -3,22 +3,18 @@ mainPanel(
   
   ### TAB-PANELS ###
   fluidRow(
-    # A static infoBox
-    infoBox("Income YTD", "$174,030", icon = icon("credit-card")),
-    # Dynamic infoBoxes
-    infoBoxOutput("progressBox"),
-    infoBoxOutput("approvalBox")
+    infoBox("Income YTD", "$174,030", icon = icon("credit-card")), # A static infoBox
+    infoBoxOutput("progressBox"), # Dynamic infoBox
+    infoBoxOutput("approvalBox") # Dynamic infoBox
   ),
-  
-  fluidRow(
-    # Clicking this will increment the progress amount
-    box(width = 4, actionButton("count", "Increment progress"))
-  ), 
-  
-  
+
   fluidRow(
     ### INCOME CHART ###
     box(title = "Income Events", status = "primary", solidHeader = TRUE, width = 8, 
+        selectInput("incomeChartSelect", label = "Select Income Chart Type",
+                    choices = c("Income Events YTD", "Total Income YTD", "Income By Source YTD"),
+                    selected = "Income Events YTD", multiple = FALSE,
+                    width = "100%"),
       plotOutput("plot_income_events_last6mo")
       ),
     
