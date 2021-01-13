@@ -24,6 +24,14 @@ mainPanel(
         ),
         plotOutput("plotCategoryTree")
     )
+  ),
+  
+  fluidRow(
+    box(title = "Actual vs Budgeted Spending", status = "primary", solidHeader = TRUE, width = 12, 
+        plotOutput("test_plot")
+        )
+    
+    
   )
   
 )

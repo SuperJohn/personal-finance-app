@@ -1,41 +1,54 @@
 # setwd("~/Documents/dev/personal_finance")
 # source("global.R", local = TRUE)
 
-### TILLER CATEGORIES & BUDGETS ###
+### BUDGETS ###
 budgets_long <- tiller_categories_data %>%
   select(-`Hide From Reports`) %>%
   melt(id = c("Category", "Group", "Type"), variable.name = "date", value.name = "amount") %>%
   mutate(date = as.character(date)) %>%
-  mutate(date = parse_date(date, format = "%m/%d/%Y")) %>%
+  mutate(date = parse_date(date, format = "%m/%d/%y")) %>%
+  rename(month = date) %>%
   mutate(amount = parse_number(str_remove(amount, regex("\\$", ignore_case = TRUE)))) %>%
+  mutate(month_num = month(as.Date(month)), year = year(month)) %>%
+  mutate(year_month = paste0(year, "-", month_num)) %>%
   clean_names()
 
 budgets_wide <- budgets_long %>%
-  dcast(category + group + type ~ date) %>%
+  select(category, group, type, month, amount) %>%
+  dcast(category + group + type ~ month, value.var = "amount") %>%
   arrange(-`2020-12-01`)
 
-category_lookup_table <- budgets_long %>%
-  select(category, group, type)
+category_lookup_table <- budgets_wide %>%
+  select(category, group, type) %>% 
+  unique()
 
 
 ### TILLER TRANSACTIONS ###
 transactions <- tiller_transactions %>% 
-  readr::type_convert() %>%
-  mutate(Date = mdy(Date), Month = mdy(Month), Week = mdy(Week), `Categorized Date` = mdy(`Categorized Date`), `Date Added` = mdy(`Date Added`), Category = factor(Category)) %>%
-  mutate(Amount = str_remove(Amount, regex("\\$", ignore_case = TRUE))) %>%
-  mutate(Amount = parse_number(Amount), Account = factor(Account), `Account #` = factor(`Account #`)) %>% 
-  dplyr::select(c('Date', 'Amount', 'Category', 'Description')) %>%
+  dplyr::select(c('Date', 'Amount', 'Category', 'Description', 'Month', 'Week')) %>%
   janitor::clean_names() %>%
-  left_join(category_lookup_table, by = "category")
+  left_join(category_lookup_table, by = "category") %>%
+  mutate(date = mdy(date), month = mdy(month), week = mdy(week)) %>%
+  mutate(category = as_factor(category), group = as_factor(group), type = as_factor(type)) %>%
+  arrange(-amount)
 
 transactions_monthly <- transactions %>% 
-  filter(type == "Expense") %>%
-  mutate(month = month(as.Date(date)), year = year(date)) %>%
-  mutate(year_month = paste0(year, "-", month)) %>%
-  group_by(group, category, year_month) %>% 
+  mutate(month_num = month(as.Date(date)), year = year(date)) %>%
+  # mutate(year_month = paste0(year, "-", month_num)) %>%
+  group_by(type, group, category, year, month, month_num) %>%
   summarise(amount = sum(amount)) %>%
-  filter(year_month >= "2020-1")
-  
+  arrange(-amount)
+
+### ACTUAL VS BUDGETED ###
+act_vs_est_monthly <- budgets_long  %>%
+  left_join(transactions_monthly, by = c("type", "group", "category", "month"), suffix = c(".budgeted", ".actual")) %>%
+  select(type, group, category, month, year_month, amount.budgeted, amount.actual) %>%
+  mutate(amount.budgeted = case_when(type=="Income" ~ amount.budgeted,
+                                     TRUE ~ -amount.budgeted)) %>%
+  mutate(amount.diff = amount.actual - amount.budgeted, amount.variance = round((amount.actual - amount.budgeted)/amount.budgeted,2)) %>%
+  mutate(year_num = year(month), month_num = month(month)) %>%
+  mutate(category = as_factor(category), group = as_factor(group), type = as_factor(type)) %>%
+  arrange(-amount.budgeted)
 
 ### AMAZON TRANSACTIONS ###
 clean_amazon_items <- function(df){
@@ -69,4 +82,3 @@ income_events_last6mo <- income_transaction_history %>%
   group_by(group, category, year_month) %>% 
   summarise(amount = sum(amount)) %>%
   filter(year_month >= "2020-1")
-

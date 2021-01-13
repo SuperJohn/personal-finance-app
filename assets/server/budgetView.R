@@ -1,12 +1,12 @@
 # Budget Tree-Chart
 
 budgetTreeData <- budgets_long %>%
-  filter(date == max(date)) %>%
+  filter(month == max(month)) %>%
   filter(type != "Income")
 
 output$plotBudgetTree = shiny::renderPlot({
     treemap(budgetTreeData,
-            title = paste("Budgets", ", ", max(treeData$date)), 
+            title = paste("Budgets", ", ", max(budgetTreeData$month)), 
             index=c("group", "category"),
             vSize="amount",
             vColor="type",
@@ -22,8 +22,10 @@ output$plotBudgetTree = shiny::renderPlot({
 
 # BUDGET WIDE
 budgetTable <- budgets_long %>%
-  filter(date >= as.Date('2020-08-01')) %>%
-  dcast(category + group + type ~ date) %>%
+  filter(month >= as.Date('2020-08-01')) %>%
+  select(type, group, category, month, amount) %>%
+  mutate(amount = replace_na(amount,0)) %>%
+  dcast(category + group + type ~ month, value.var = "amount") %>%
   arrange(-`2020-12-01`)
 
 output$budgetTable = DT::renderDataTable({
