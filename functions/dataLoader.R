@@ -25,11 +25,11 @@ category_lookup_table <- budgets_wide %>%
 
 ### TILLER TRANSACTIONS ###
 transactions <- tiller_transactions %>% 
-  dplyr::select(c('Date', 'Amount', 'Category', 'Description', 'Month', 'Week')) %>%
   janitor::clean_names() %>%
   left_join(category_lookup_table, by = "category") %>%
   mutate(date = mdy(date), month = mdy(month), week = mdy(week)) %>%
-  mutate(category = as_factor(category), group = as_factor(group), type = as_factor(type)) %>%
+  mutate(category = as_factor(category), group = as_factor(group), type = as_factor(type), year = year(date)) %>%
+  dplyr::select(c(type, group, category, year, month, week, date, amount, description)) %>%
   arrange(-amount)
 
 transactions_monthly <- transactions %>% 

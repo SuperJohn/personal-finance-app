@@ -19,22 +19,18 @@ suppressMessages(library(d3Dashboard))
 suppressMessages(library(htmlwidgets))
 suppressMessages(library(htmltools))
 
-
-
 # Options -----------------------------------------------------------------
 options(scipen = 999)             # Disables scientific notation
 
 source("config.R", local = TRUE)
 
 # Load data ---------------------------------------------------------------
-
-setwd("~/Documents/dev/personal_finance")
 tiller_categories_data <- read_delim("data/Tiller Personal Finance - Categories.tsv", "\t", escape_double = FALSE, locale = locale(), trim_ws = TRUE)
-# tiller_transactions <- read_delim("data/Tiller Personal Finance - Transactions.tsv", "\t", escape_double = FALSE, locale = locale(), trim_ws = TRUE)
 tiller_transactions <- read_csv("data/Tiller Personal Finance - Transactions.csv")
 john_amazon_items <- read_csv("data/amazon_transactions_2021.csv")
 sarah_amazon_items <- read_csv("data/sarah_amazon_items.csv")
 
+# run script that defines datasets used throughout application
 source("functions/dataLoader.R", local = TRUE)
 
 # load script to create bullet graphs

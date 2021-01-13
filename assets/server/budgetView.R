@@ -20,15 +20,20 @@ output$plotBudgetTree = shiny::renderPlot({
     )
 })
 
+dollarMe <- scales::dollar_format(negative_parens = TRUE, prefix = "$")
+
 # BUDGET WIDE
 budgetTable <- budgets_long %>%
   filter(month >= as.Date('2020-08-01')) %>%
-  select(type, group, category, month, amount) %>%
   mutate(amount = replace_na(amount,0)) %>%
-  dcast(category + group + type ~ month, value.var = "amount") %>%
-  arrange(-`2020-12-01`)
+  mutate(amount = dollarMe(amount)) %>%
+  select(type, group, category, month, amount) %>%
+  arrange(month) %>%
+  dcast(category + group + type ~ month, value.var = "amount")
+  
 
 output$budgetTable = DT::renderDataTable({
+  
   datatable(budgetTable, filter = 'top', rownames = FALSE, 
             options = list(scrollX = TRUE,
                            pageLength = 50,
