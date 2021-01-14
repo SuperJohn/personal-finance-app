@@ -19,7 +19,8 @@ output$mytable = DT::renderDataTable({
   datatable(mytableData(), 
             filter = 'top', rownames = FALSE, 
             options = list(scrollX = TRUE, 
-                           autoWidth = TRUE ,
+                           autoWidth = TRUE,
+                           pageLength = 100,
                            columnDefs = list(
                              list(width = '400px', targets = 5)
                              # list(width = '100px', targets = c(0,1))
@@ -42,6 +43,6 @@ transactionsView.category.table <- transactions %>%
 # CATEGORY TRANSACTIONS SUMMARY
 output$transactionsView.category.table = DT::renderDataTable({
   datatable(transactionsView.category.table, width = "1500px", rownames = TRUE , 
-            options = list(scrollX = TRUE), 
+            options = list(scrollX = TRUE, pageLength = 50, autoWidth = TRUE), 
   )
 })

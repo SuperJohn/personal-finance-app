@@ -29,6 +29,7 @@ transactions <- tiller_transactions %>%
   left_join(category_lookup_table, by = "category") %>%
   mutate(date = mdy(date), month = mdy(month), week = mdy(week)) %>%
   mutate(category = as_factor(category), group = as_factor(group), type = as_factor(type), year = year(date)) %>%
+  mutate(amount = parse_number(str_remove(amount, regex("\\$", ignore_case = TRUE)))) %>%
   dplyr::select(c(type, group, category, year, month, week, date, amount, description)) 
 
 transactions_monthly <- transactions %>% 

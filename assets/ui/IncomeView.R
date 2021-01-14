@@ -18,9 +18,10 @@ mainPanel(
       plotOutput("plot_income_events_last6mo")
       )
     ), 
-   
-  ### INCOME TRANSACTIONS TABLE ###
-  h2("Income Transactions"),
-  DT::dataTableOutput("incomeTransactions")
+  fluidRow(
+    box(title = "Income Transactions", status = "primary", solidHeader = FALSE, width = 12,
+      DT::dataTableOutput("incomeTransactions")
+    )
+  )
 
 )

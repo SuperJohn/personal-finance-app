@@ -1,8 +1,12 @@
 
+# incomeLast30Days <- income_events_last6mo %>% filter(year_month == max(year_month)) %>% ungroup() %>% summarise(total = sum(as.numeric(amount))) %>% select(total)
+
+
+
 ### TAB-PANELS ###
 output$progressBox <- renderInfoBox({
   infoBox(
-    "Income Past 30 Days", "$174,031", icon = icon("list"),
+    "Income Past 30 Days", "$23,320", icon = icon("list"), # paste0("$",incomeLast30Days[[1]])
     color = "purple"
   )
 })
@@ -19,6 +23,8 @@ col_charter <- function(df){
   s <- ggplot(df, aes(x = year_month, y = amount, fill = category)) + theme(legend.position = "bottom")
   s + geom_bar(position="stack", stat="identity")
 }
+
+
 
 output$plot_income_events_last6mo = shiny::renderPlot({
   col_charter(income_events_last6mo)
