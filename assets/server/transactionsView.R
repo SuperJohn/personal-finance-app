@@ -1,11 +1,22 @@
 # CHASE BANKING TRANSACTIONS
-mytableData <- transactions %>% 
-  select(transactionsView.table.columns) %>% 
-  mutate(amount = replace_na(amount,0)) %>%
-  mutate(amount = dollarMe(amount))
+# mytableData <- transactions %>% 
+#   select(transactionsView.table.columns) %>% 
+#   mutate(amount = replace_na(amount,0)) %>%
+#   mutate(amount = dollarMe(amount))
+
+mytableData <- reactive({
+  
+  transactions %>% 
+    select(transactionsView.table.columns) %>% 
+    mutate(amount = replace_na(amount,0)) %>%
+    mutate(amount = dollarMe(amount)) %>%
+    filter(date >= input$dateSelectorInput[1]) %>%
+    filter(date <= input$dateSelectorInput[2])
+  
+})
 
 output$mytable = DT::renderDataTable({
-  datatable(mytableData, 
+  datatable(mytableData(), 
             filter = 'top', rownames = FALSE, 
             options = list(scrollX = TRUE, 
                            autoWidth = TRUE ,
@@ -16,6 +27,8 @@ output$mytable = DT::renderDataTable({
                            ), 
   )
 })
+
+# output$dateSelectorOutput <- renderPrint({dateSelected})
 
 transactionsView.category.table <- transactions %>% 
   filter(type == "Expense") %>%

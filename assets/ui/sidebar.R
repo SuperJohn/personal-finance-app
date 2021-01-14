@@ -1,9 +1,18 @@
 sidebar <- dashboardSidebar(
   sidebarSearchForm(textId = "sidebarSearch", buttonId = "sidebarSearchButton", label = "Search Transactions"),
+  dateRangeInput(inputId = "dateSelectorInput", label = "Select Dates", start = transactionsView.start, end = transactionsView.end, 
+                 min = as.Date(min(transactions$date)), max = as.Date(max(transactions$date)), 
+                 format = "yyyy-mm-dd",
+                 startview = "year",
+                 weekstart = 0,
+                 language = "en",
+                 separator = " to ",
+                 width = NULL,
+                 autoclose = TRUE),
+  
   sidebarMenu(
     HTML("<li class='header'>DASHBOARDS/REPORTS</li>"),
     menuItem(text = "Transactions View", tabName = "transactionsView", icon = icon("th")),
-    menuItem(text = "Amazon Transactions", tabName = "amazonTransactionsView", icon = icon("dashboard")),
     menuItem(text = "Income View", tabName = "incomeView", icon = icon("th")),
     menuItem(text = "Budgets", tabName = "budgetView", icon = icon("building"), badgeLabel = "new", badgeColor = "green"),
     menuItem(text = "Category Spending", tabName = "categoryView", icon = icon("building"), badgeLabel = "new", badgeColor = "green"),
@@ -24,11 +33,8 @@ sidebar <- dashboardSidebar(
                       tabName = 'c',
                       icon = icon('line-chart'))
     ), 
-    
-    menuItem(text = "Summary View", tabName = "occupancy", icon = icon("briefcase"), badgeLabel = "TBD", badgeColor = "navy"),
-    menuItem(text = "Monthly Budgets", tabName = "riskManagement", icon = icon("bomb"), badgeLabel = "TBD", badgeColor = "navy"),
-    menuItem(text = "Dev Ref", tabName = "devRef", icon = icon("sticky-note")), 
     HTML("<li class='header'>HELP TOPICS</li>"),
+    menuItem(text = "Dev Ref", tabName = "devRef", icon = icon("sticky-note")), 
     menuItem(text = "Help", tabName = "help", icon = icon("life-ring")), badgeLabel = "TBD", badgeColor = "navy",
     menuItem(text = "Release Notes", tabName = "releaseNotes", icon = icon("sticky-note"), badgeLabel = "TBD", badgeColor = "navy")
     )
