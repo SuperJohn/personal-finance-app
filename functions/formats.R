@@ -1,0 +1,1 @@
+dollarMe <- scales::dollar_format(negative_parens = TRUE, prefix = "$")

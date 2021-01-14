@@ -6,5 +6,9 @@ shinyServer(function(input, output, session) {
   
   source("assets/server/incomeView.R", local = TRUE)
   
+  source("assets/server/budgetView.R", local = TRUE)
+  
+  source("assets/server/categoryView.R", local = TRUE)
+  
   })
   

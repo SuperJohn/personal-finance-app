@@ -1,0 +1,123 @@
+---
+title: "R Notebook"
+output: html_notebook
+runtime: shiny
+---
+
+# Budgets
+
+```{r, warning=FALSE, message=FALSE}
+setwd("~/Documents/dev/personal_finance")
+source("global.R", local = TRUE)
+```
+
+# Raw Data
+```{r}
+head(tiller_categories_data)
+```
+
+# Long Data
+```{r}
+budgets_long <- tiller_categories_data %>%
+  select(-`Hide From Reports`) %>%
+  melt(id = c("Category", "Group", "Type"), variable.name = "date", value.name = "amount") %>%
+  mutate(date = as.character(date)) %>%
+  mutate(date = parse_date(date, format = "%m/%d/%Y")) %>%
+  mutate(amount = parse_number(str_remove(amount, regex("\\$", ignore_case = TRUE)))) %>%
+  clean_names()
+
+budgets_long
+```
+# Budgets Wide
+```{r}
+budgets_wide <- budgets_long %>%
+  dcast(category + group + type ~ date) %>%
+  arrange(-`2020-12-01`)
+
+head(budgets_wide)
+```
+
+
+# Stacked BarChart
+## Monthly Budgets by Category
+
+chart 1: income by category stacked barchart past 6 months
+chart 2: expenses by group stacked barchart past 6 month
+chart 3: expenses by category with groups drop-down
+
+```{r}
+# Income by Group
+s <- ggplot(budgets_long %>% filter(type=="Income"), aes(x=date, y=amount, fill = category)) + theme(legend.position = "bottom")
+s + geom_bar(position="stack", stat="identity")
+
+# Expenses by Group
+s <- ggplot(budgets_long %>% filter(type=="Expense"), aes(x=date, y=amount, fill = group)) + theme(legend.position = "bottom")
+s + geom_bar(position="stack", stat="identity")
+
+# Bills Category View
+s <- ggplot(budgets_long %>% filter(group=="Bills"), aes(x=date, y=amount, fill = category)) + theme(legend.position = "bottom")
+s + geom_bar(position="stack", stat="identity")
+
+s <- ggplot(budgets_long %>% filter(group=="Living"), aes(x=date, y=amount, fill = category)) + theme(legend.position = "bottom")
+s + geom_bar(position="stack", stat="identity")
+
+s <- ggplot(budgets_long %>% filter(group=="Debt Re-Pymt"), aes(x=date, y=amount, fill = category)) + theme(legend.position = "bottom")
+s + geom_bar(position="stack", stat="identity")
+
+s <- ggplot(budgets_long %>% filter(group=="Discretionary"), aes(x=date, y=amount, fill = category)) + theme(legend.position = "bottom")
+s + geom_bar(position="stack", stat="identity")
+```
+```{r}
+library(treemap)
+library(d3treeR)
+
+# dataset
+group <- c(rep("group-1",4),rep("group-2",2),rep("group-3",3))
+subgroup <- paste("subgroup" , c(1,2,3,4,1,2,1,2,3), sep="-")
+value <- c(13,5,22,12,11,7,3,1,23)
+data <- data.frame(group,subgroup,value)
+
+data <- budgets_long %>%
+  filter(date == max(date))
+
+head(data)
+
+# basic treemap
+p <- d3tree2(
+  treemap(data,
+            index=c("group", "category"),
+            vSize="amount",
+            vColor="type",
+            type="index",
+            palette = "Set2",
+            bg.labels=c("white"),
+            align.labels=list(
+              c("center", "center"), 
+              c("right", "bottom")
+            )  
+          )
+  , rootname = paste0("Budget ", max(data$date))
+)
+ 
+# make it interactive ("rootname" becomes the title of the plot):
+inter <- d3tree2( p ,  rootname = "General" )
+
+# save the widget
+# library(htmlwidgets)
+# saveWidget(inter, file=paste0( getwd(), "/HtmlWidget/interactiveTreemap.html"))
+
+library(treemap)
+library(d3treeR)
+data(GNI2014)
+d3tree2(
+   treemap(
+     GNI2014
+     ,index=c("continent", "iso3")
+     ,vSize="population"
+     ,vColor="GNI"
+     ,type="value"
+   )
+   , rootname = "World"
+)
+```
+
