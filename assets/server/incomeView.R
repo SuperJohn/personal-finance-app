@@ -1,7 +1,9 @@
 
 # incomeLast30Days <- income_events_last6mo %>% filter(year_month == max(year_month)) %>% ungroup() %>% summarise(total = sum(as.numeric(amount))) %>% select(total)
 
-
+incomeTransactions <- income_transaction_history %>% 
+  select(-type, -group, -year, -month, -week) %>%
+  select(date, category, description, amount)
 
 ### TAB-PANELS ###
 output$progressBox <- renderInfoBox({
@@ -32,7 +34,13 @@ output$plot_income_events_last6mo = shiny::renderPlot({
 
 ### INCOME TRANSACTIONS TABLE ###
 output$incomeTransactions = DT::renderDataTable({
-  datatable(income_transaction_history, filter = 'top', width = "1500px", rownames = FALSE, 
-            options = list(scrollX = TRUE), 
+  datatable(incomeTransactions, filter = 'top', width = "auto", rownames = FALSE, 
+            options = list(scrollX = TRUE,
+                           pageLength = 50,
+                           autoWidth = TRUE,
+                           columnDefs = list(
+                             list(width = '500px', targets = 2)
+                             )
+                           )
   )
 })

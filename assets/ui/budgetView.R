@@ -32,6 +32,98 @@ mainPanel(
           )
         )
     )
-  )
+  ),
+  
+### START CODE FOR PIVOT-TABLE ###
+box(title = "Budget Explorer Pivot Table", status = "primary", solidHeader = TRUE, width = 12, 
+  # titlePanel("Budget Explorer Pivot Table"),
+  
+  fluidRow(
+    column(3,
+           selectInput("selectRows1", label = h5("Rows 1"),
+                       choices = list("None" = "None",
+                                      "Status" = "Status",
+                                      "Train Category" = "TrainCategory",
+                                      "TOC" = "TOC",
+                                      "Power Type" = "PowerType",
+                                      "Scheduled Speed" = "SchedSpeedMPH",
+                                      "Origin" = "OriginName",
+                                      "Destination" = "DestinationName"),
+                       selected = "TOC")
+    ),
+    column(3,
+           selectInput("selectRows2", label = h5("Rows 2"),
+                       choices = list("None" = "None",
+                                      "Status" = "Status",
+                                      "Train Category" = "TrainCategory",
+                                      "TOC" = "TOC",
+                                      "Power Type" = "PowerType",
+                                      "Scheduled Speed" = "SchedSpeedMPH",
+                                      "Origin" = "OriginName",
+                                      "Destination" = "DestinationName"),
+                       selected = "None")
+    ),
+    column(3,
+           selectInput("selectCols1", label = h5("Columns 1"),
+                       choices = list("None" = "None",
+                                      "Status" = "Status",
+                                      "Train Category" = "TrainCategory",
+                                      "TOC" = "TOC",
+                                      "Power Type" = "PowerType",
+                                      "Scheduled Speed" = "SchedSpeedMPH",
+                                      "Origin" = "OriginName",
+                                      "Destination" = "DestinationName"),
+                       selected = "TrainCategory")
+    ),
+    column(3,
+           selectInput("selectCols2", label = h5("Columns 2"),
+                       choices = list("None" = "None",
+                                      "Status" = "Status",
+                                      "Train Category" = "TrainCategory",
+                                      "TOC" = "TOC",
+                                      "Power Type" = "PowerType",
+                                      "Scheduled Speed" = "SchedSpeedMPH",
+                                      "Origin" = "OriginName",
+                                      "Destination" = "DestinationName"),
+                       selected = "None")
+    )
+  ),
+  
+  fluidRow(
+    column(3,
+           selectInput("selectMeasure1", label = h5("Measure 1"),
+                       choices = list("Train Count" = "Train Count",
+                                      "% of Trains" = "% of Trains",
+                                      "Total Arrival Delay Minutes" = "Total Arrival Delay Minutes",
+                                      "Average Arrival Delay Minutes" = "Average Arrival Delay Minutes",
+                                      "Max Arrival Delay Minutes" = "Max Arrival Delay Minutes",
+                                      "Trains with Arrival Delay >= 5 Minutes",
+                                      "% of Trains with Arrival Delay >= 5 Minutes"),
+                       selected = "Train Count")
+    ),
+    column(3,
+           selectInput("selectMeasure2", label = h5("Measure 2"),
+                       choices = list("None",
+                                      "Train Count" = "Train Count",
+                                      "% of Trains" = "% of Trains",
+                                      "Total Arrival Delay Minutes" = "Total Arrival Delay Minutes",
+                                      "Average Arrival Delay Minutes" = "Average Arrival Delay Minutes",
+                                      "Max Arrival Delay Minutes" = "Max Arrival Delay Minutes",
+                                      "Trains with Arrival Delay >= 5 Minutes",
+                                      "% of Trains with Arrival Delay >= 5 Minutes"),
+                       selected = "None")
+    ),
+    column(6,
+           br(),
+           helpText("Note:  Selecting Origin and/or Destination in rows/columns will result in thousands or
+               tens of thousands of cells being calculated, so the pivot table may take a couple of
+               minutes to calculate.")
+    )
+  ),
+  
+  hr(),
+  
+  pivottablerOutput('pvt')
+)
 
 )

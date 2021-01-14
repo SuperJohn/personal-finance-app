@@ -18,6 +18,8 @@ suppressMessages(library(DT))               # Required for data table generation
 suppressMessages(library(d3Dashboard))
 suppressMessages(library(htmlwidgets))
 suppressMessages(library(htmltools))
+suppressMessages(library(pivottabler))
+
 
 # Options -----------------------------------------------------------------
 options(scipen = 999)             # Disables scientific notation

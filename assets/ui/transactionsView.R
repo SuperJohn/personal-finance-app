@@ -10,7 +10,7 @@ mainPanel(
   ),
 
   fluidRow(
-    box(title = "Transaction Filters", status = "primary", solidHeader = FALSE, width = 12, collapsible = TRUE, collapsed = TRUE,
+    box(title = "Transaction Filters", status = "primary", solidHeader = FALSE, width = 12, collapsible = TRUE, collapsed = FALSE,
         # verbatimTextOutput(output$dateSelectorOutput),
         box(selectInput("typeSelectInput", label = "Select Type",
                         choices = levels(transactions$type),
