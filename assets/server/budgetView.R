@@ -20,8 +20,6 @@ output$plotBudgetTree = shiny::renderPlot({
     )
 })
 
-dollarMe <- scales::dollar_format(negative_parens = TRUE, prefix = "$")
-
 # BUDGET WIDE
 budgetTable <- budgets_long %>%
   filter(month >= as.Date('2020-08-01')) %>%

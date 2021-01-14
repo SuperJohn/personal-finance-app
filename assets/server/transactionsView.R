@@ -1,19 +1,34 @@
 # CHASE BANKING TRANSACTIONS
+mytableData <- transactions %>% 
+  select(transactionsView.table.columns) %>% 
+  mutate(amount = replace_na(amount,0)) %>%
+  mutate(amount = dollarMe(amount))
+
 output$mytable = DT::renderDataTable({
-  datatable(transactions, filter = 'top', width = "1500px", rownames = FALSE, 
+  datatable(mytableData, 
+            filter = 'top', rownames = FALSE, 
             options = list(scrollX = TRUE, 
-                           autoWidth = TRUE,
+                           autoWidth = TRUE ,
                            columnDefs = list(
-                             list(width = '300px', targets = c(3)),
-                             list(width = '50px', targets = c(0,1))
+                             list(width = '400px', targets = 5)
+                             # list(width = '100px', targets = c(0,1))
                              )
                            ), 
   )
 })
 
-# AMAZON ORDERS
-output$amazonOrders = DT::renderDataTable({
-  datatable(amazon_orders, filter = 'top', width = "1500px", rownames = FALSE, 
+transactionsView.category.table <- transactions %>% 
+  filter(type == "Expense") %>%
+  tabyl(month, category) %>%
+  adorn_totals(c("row", "col")) %>%
+  adorn_percentages("row") %>%
+  adorn_pct_formatting(rounding = "half up", digits = 0) %>% 
+  adorn_ns() %>%
+  adorn_title("combined")
+
+# CATEGORY TRANSACTIONS SUMMARY
+output$transactionsView.category.table = DT::renderDataTable({
+  datatable(transactionsView.category.table, width = "1500px", rownames = TRUE , 
             options = list(scrollX = TRUE), 
   )
 })

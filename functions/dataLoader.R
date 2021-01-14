@@ -29,8 +29,7 @@ transactions <- tiller_transactions %>%
   left_join(category_lookup_table, by = "category") %>%
   mutate(date = mdy(date), month = mdy(month), week = mdy(week)) %>%
   mutate(category = as_factor(category), group = as_factor(group), type = as_factor(type), year = year(date)) %>%
-  dplyr::select(c(type, group, category, year, month, week, date, amount, description)) %>%
-  arrange(-amount)
+  dplyr::select(c(type, group, category, year, month, week, date, amount, description)) 
 
 transactions_monthly <- transactions %>% 
   mutate(month_num = month(as.Date(date)), year = year(date)) %>%
@@ -82,3 +81,4 @@ income_events_last6mo <- income_transaction_history %>%
   group_by(group, category, year_month) %>% 
   summarise(amount = sum(amount)) %>%
   filter(year_month >= "2020-1")
+

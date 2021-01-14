@@ -31,15 +31,15 @@ john_amazon_items <- read_csv("data/amazon_transactions_2021.csv")
 sarah_amazon_items <- read_csv("data/sarah_amazon_items.csv")
 
 # run script that defines datasets used throughout application
+source("functions/formats.R", local = TRUE)
 source("functions/dataLoader.R", local = TRUE)
 
 # load script to create bullet graphs
 source("assets/ui/bulletGraph.R", local = TRUE) # bulletgraph()
-
 source("assets/ui/Rbulletgraph.R", local = TRUE) # bullet.graph(incidents) 
 
 # Source scripts ----------------------------------------------------------
-
+source("settings.R", local = TRUE)
 source("assets/ui/header.R", local = TRUE)
 source("assets/ui/sidebar.R", local = TRUE)
 source("assets/ui/body.R", local = TRUE)
