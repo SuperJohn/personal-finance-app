@@ -82,3 +82,32 @@ income_events_last6mo <- income_transaction_history %>%
   summarise(amount = sum(amount)) %>%
   filter(year_month >= "2020-1")
 
+### FOR PIVOT-TABLE IN BUDGET VIEW ###
+
+  # to be used when getting station names in joins below
+  tsorigin = transmute(trainstations, CrsCode=as.character(CrsCode),
+                       OriginName=as.character(StationName))
+  tsdestination = transmute(trainstations, CrsCode=as.character(CrsCode),
+                            DestinationName=as.character(StationName))
+  
+  # recode status and join to get station names from CrsCodes
+  data <- bhmtrains %>%
+    mutate(Status = recode(Status,
+                           "A" = "Active", "C" = "Cancelled", "R" = "Reinstated"),
+           Origin = as.character(Origin),
+           Destination = as.character(Destination)) %>%
+    left_join(tsorigin, by = c("Origin" = "CrsCode")) %>%
+    left_join(tsdestination, by = c("Destination" = "CrsCode"))
+  
+  # derive some additional delay data
+  data <- mutate(data,
+                 GbttDateTime=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
+                 GbttMonth=make_date(year=year(GbttDateTime), month=month(GbttDateTime), day=1),
+                 IsArrival=ifelse(is.na(GbttArrival), 0, 1),
+                 ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
+                 ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta),
+                 DelayedByMoreThan5Minutes=ifelse(ArrivalDelay>5,1,0))
+  
+  data <- transactions
+  
+  totalTrainCount <- nrow(data)
