@@ -10,8 +10,8 @@ mainPanel(
   fluidRow(
     box(width = 6, 
         selectInput("categoryMonthSelect", label = "Select Transaction Month",
-                    choices = c("Nov-2020", "Dec-2020", "Jan-2021", "Feb-2021"),
-                    selected = "Jan-2021", multiple = FALSE)
+                    choices = c(transaction.months),
+                    selected = max(max(budget.months)), multiple = FALSE)
     ),
     box(width = 6, 
         selectInput("categoryChartSelect", label = "Select Category Chart Type",

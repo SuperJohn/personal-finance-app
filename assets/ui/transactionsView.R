@@ -8,33 +8,22 @@ mainPanel(
     infoBox("Income MTD", "$14,030", icon = icon("credit-card")),
     infoBox("Net Income MTD", "$1,530", icon = icon("credit-card"))
   ),
-
+  
   fluidRow(
-    box(title = "Transactions", status = "primary", solidHeader = TRUE, width = 12, 
-        box(width = 4,
-            dateRangeInput(inputId = "dateSelectorInput", label = "Select Dates", start = transactionsView.start, end = transactionsView.end, 
-                           min = as.Date(min(transactions$date)), max = as.Date(max(transactions$date)), 
-                           format = "yyyy-mm-dd",
-                           startview = "year",
-                           weekstart = 0,
-                           language = "en",
-                           separator = " to ",
-                           width = NULL,
-                           autoclose = TRUE)
-            ),
-        
-        box(width = 4, 
+    box(title = "Transaction Filer", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE, collapsed = TRUE,  
+        fluidRow(
+          box(
             selectInput("typeSelectInput", label = "Select Type",
                         choices = levels(transactions$type),
                         selected = levels(transactions$type)[1], multiple = TRUE)
-            ),
-        
-        box(width = 4, 
+          ),
+          
+          box( 
             selectInput("groupSelectInput", label = "Select Group",
                         choices = levels(transactions$group),
                         selected = transactionsView.group.default, multiple = FALSE)
-            ),
-        
+          )
+        ),
         selectizeInput("categorySelectInput", label = "Select Category",
                        choices = levels(transactions$category),
                        selected = levels(transactions$category), multiple = TRUE, size = 5)
@@ -44,7 +33,7 @@ mainPanel(
   
                                                                            
   fluidRow(
-    box(title = "Transactions", status = "primary", solidHeader = TRUE, width = 12, 
+    box(title = "Transactions Table", status = "primary", solidHeader = TRUE, width = 12, 
       tabsetPanel(
         tabPanel("Transactions", 
                  

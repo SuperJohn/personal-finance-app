@@ -1,14 +1,4 @@
 # CHASE BANKING TRANSACTIONS
-mytableData <- transactions %>% 
-  select(transactionsView.table.columns) %>% 
-  mutate(amount = replace_na(amount,0)) %>%
-  mutate(amount = dollarMe(amount))
-
-# mytableData <- transactions %>% 
-#   select(transactionsView.table.columns) %>% 
-#   mutate(amount = replace_na(amount,0)) %>%
-#   mutate(amount = dollarMe(amount))
-
 mytableData <- reactive({
   
   transactions %>% 
@@ -17,7 +7,8 @@ mytableData <- reactive({
     mutate(amount = dollarMe(amount)) %>%
     filter(date >= input$dateSelectorInput[1]) %>%
     filter(date <= input$dateSelectorInput[2]) %>%
-    mutate(date = format(as.Date(date), format="%a %b %d %y"))
+    mutate(day_of_week = format(as.Date(date), format="%a")) %>%
+    mutate(date = format(as.Date(date), format="%b-%d-%Y"))
   
 })
 

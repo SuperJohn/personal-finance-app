@@ -5,13 +5,15 @@
 budgets_long <- tiller_categories_data %>%
   select(-`Hide From Reports`) %>%
   melt(id = c("Category", "Group", "Type"), variable.name = "date", value.name = "amount") %>%
+  clean_names() %>% 
   mutate(date = as.character(date)) %>%
   mutate(date = parse_date(date, format = "%m/%d/%y")) %>%
   rename(month = date) %>%
+  mutate(category = as_factor(category), group = as_factor(group), type = as_factor(type)) %>%
   mutate(amount = parse_number(str_remove(amount, regex("\\$", ignore_case = TRUE)))) %>%
-  mutate(month_num = month(as.Date(month)), year = year(month)) %>%
-  mutate(year_month = paste0(year, "-", month_num)) %>%
-  clean_names()
+  mutate(month_num = month(month), year = year(month)) %>%
+  mutate(year_month = paste0(year, "-", month_num))
+  
 
 budgets_wide <- budgets_long %>%
   select(category, group, type, month, amount) %>%
@@ -82,33 +84,3 @@ income_events_last6mo <- income_transaction_history %>%
   group_by(group, category, year_month) %>% 
   summarise(amount = sum(amount)) %>%
   filter(year_month >= "2020-1")
-
-### FOR PIVOT-TABLE IN BUDGET VIEW ###
-
-  # to be used when getting station names in joins below
-  tsorigin = transmute(trainstations, CrsCode=as.character(CrsCode),
-                       OriginName=as.character(StationName))
-  tsdestination = transmute(trainstations, CrsCode=as.character(CrsCode),
-                            DestinationName=as.character(StationName))
-  
-  # recode status and join to get station names from CrsCodes
-  data <- bhmtrains %>%
-    mutate(Status = recode(Status,
-                           "A" = "Active", "C" = "Cancelled", "R" = "Reinstated"),
-           Origin = as.character(Origin),
-           Destination = as.character(Destination)) %>%
-    left_join(tsorigin, by = c("Origin" = "CrsCode")) %>%
-    left_join(tsdestination, by = c("Destination" = "CrsCode"))
-  
-  # derive some additional delay data
-  data <- mutate(data,
-                 GbttDateTime=if_else(is.na(GbttArrival), GbttDeparture, GbttArrival),
-                 GbttMonth=make_date(year=year(GbttDateTime), month=month(GbttDateTime), day=1),
-                 IsArrival=ifelse(is.na(GbttArrival), 0, 1),
-                 ArrivalDelta=difftime(ActualArrival, GbttArrival, units="mins"),
-                 ArrivalDelay=ifelse(ArrivalDelta<0, 0, ArrivalDelta),
-                 DelayedByMoreThan5Minutes=ifelse(ArrivalDelay>5,1,0))
-  
-  data <- transactions
-  
-  totalTrainCount <- nrow(data)
