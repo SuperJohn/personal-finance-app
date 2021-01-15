@@ -17,12 +17,12 @@ mytableData <- reactive({
     mutate(amount = dollarMe(amount)) %>%
     filter(date >= input$dateSelectorInput[1]) %>%
     filter(date <= input$dateSelectorInput[2]) %>%
-    mutate(date = format(as.Date(date), format="%a, %b %d, %y"))
+    mutate(date = format(as.Date(date), format="%a %b %d %y"))
   
 })
 
 output$mytable = DT::renderDataTable({
-  datatable(mytableData, 
+  datatable(mytableData(), 
             filter = 'top', rownames = FALSE, 
             options = list(scrollX = TRUE, 
                            autoWidth = TRUE ,
