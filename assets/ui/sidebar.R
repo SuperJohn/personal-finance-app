@@ -12,31 +12,31 @@ sidebar <- dashboardSidebar(
   
   sidebarMenu(
     HTML("<li class='header'>DASHBOARDS/REPORTS</li>"),
-    menuItem(text = "Transactions View", tabName = "transactionsView", icon = icon("th")),
-    menuItem(text = "Income View", tabName = "incomeView", icon = icon("th")),
-    menuItem(text = "Budgets", tabName = "budgetView", icon = icon("building"), badgeLabel = "new", badgeColor = "green"),
-    menuItem(text = "Category Spending", tabName = "categoryView", icon = icon("building"), badgeLabel = "new", badgeColor = "green"),
-    menuItem('Dashboard Gallery', tabName = 'y', icon = icon('line-chart'),
-             menuItem('Dashboard a',
+    menuItem(text = "Transactions View", tabName = "transactionsView", icon = icon("money-check-alt")),
+    menuItem(text = "Income View", tabName = "incomeView", icon = icon("money-bill-alt")),
+    menuItem(text = "Budgets", tabName = "budgetView", icon = icon("hat-wizard")),
+    menuItem(text = "Category Spending", tabName = "categoryView", icon = icon("chart-area")),
+    menuItem('Dashboard Gallery', tabName = 'y', icon = icon('fighter-jet'),
+             menuItem('Magic Dashboard',
                       tabName = 'a',
-                      icon = icon('line-chart')),
-             menuItem('Dashboard b',
+                      icon = icon('magic')),
+             menuItem('Gems Dashboard',
                       tabName = 'b',
-                      icon = icon('line-chart'),
-                      menuSubItem('l',
-                                  tabName = 'l',
-                                  icon = icon('line-chart')),
-                      menuSubItem('m',
-                                  tabName = 'm',
-                                  icon = icon('line-chart'))),
-             menuItem('Dashboard c',
-                      tabName = 'c',
-                      icon = icon('line-chart'))
+                      icon = icon('gem'),
+                      menuSubItem('Candy Canes',
+                                  tabName = 'Candy Canes',
+                                  icon = icon('candy-cane')),
+                      menuSubItem('Beers',
+                                  tabName = 'Beers',
+                                  icon = icon('beer'))),
+             menuItem('Explosive Dashboard',
+                      tabName = 'Explosive Dashboard',
+                      icon = icon('bomb'))
     ), 
     HTML("<li class='header'>HELP TOPICS</li>"),
-    menuItem(text = "Dev Ref", tabName = "devRef", icon = icon("sticky-note")), 
-    menuItem(text = "Help", tabName = "help", icon = icon("life-ring")), badgeLabel = "TBD", badgeColor = "navy",
-    menuItem(text = "Release Notes", tabName = "releaseNotes", icon = icon("sticky-note"), badgeLabel = "TBD", badgeColor = "navy")
+    menuItem(text = "Dev Ref", tabName = "devRef", icon = icon("laptop-code")), 
+    menuItem(text = "Help", tabName = "help", icon = icon("life-ring")),
+    menuItem(text = "Release Notes", tabName = "releaseNotes", icon = icon("sticky-note"))
     )
   
   )
