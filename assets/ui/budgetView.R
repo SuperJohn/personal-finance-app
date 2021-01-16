@@ -28,7 +28,8 @@ mainPanel(
                    plotOutput("plotBudgetTree")
           ),
           tabPanel("Monthly Budgets",
-                   dataTableOutput("budgetTable")
+                   highchartOutput("plotBudgetTreeMap")
+                   # dataTableOutput("budgetTable")
           ),
           tabPanel("Budget Pivot",
                    fluidRow(

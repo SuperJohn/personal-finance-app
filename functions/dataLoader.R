@@ -52,6 +52,23 @@ act_vs_est_monthly <- budgets_long  %>%
   mutate(category = as_factor(category), group = as_factor(group), type = as_factor(type)) %>%
   arrange(-amount.budgeted)
 
+### BALANCE HISTORY ###
+# melt(id = c("Category", "Group", "Type"), variable.name = "date", value.name = "amount") %>%
+balances <- balance_history %>%
+  clean_names() %>% 
+  mutate(balance = parse_number(balance)) %>% 
+  mutate(date = parse_date(date, format = "%m/%d/%y")) %>% 
+  filter(account != "4060 Sequoia Mortgage") %>% 
+  dplyr::arrange(desc(date)) %>%
+  dplyr::group_by(account) %>% 
+  mutate(roll_mean = zoo::rollmean(balance, k = 7, fill = balance))
+
+balances.wide <- balances %>%
+  group_by(month, week, date, account) %>%
+  summarise(balance = max(balance)) %>%
+  dcast(month + week + date ~ account, value.var = "balance") %>%
+  clean_names()
+
 ### AMAZON TRANSACTIONS ###
 clean_amazon_items <- function(df){
   df %>%
@@ -76,11 +93,12 @@ amazon_orders <- amazon_transactions %>%
 
 ### INCOME TRANSACTIONS VIEW ###
 income_transaction_history <- transactions %>% 
-  filter(type == "Income")
+  filter(type == "Income") %>%
+  select(-type, -group)
 
 income_events_last6mo <- income_transaction_history %>%
   mutate(month = month(as.Date(date)), year = year(date)) %>%
   mutate(year_month = paste0(year, "-", month)) %>%
-  group_by(group, category, year_month) %>% 
+  group_by(category, year_month) %>% 
   summarise(amount = sum(amount)) %>%
-  filter(year_month >= "2020-1")
+  filter(year_month >= "2020-1") 

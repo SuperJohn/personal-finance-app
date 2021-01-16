@@ -10,5 +10,7 @@ shinyServer(function(input, output, session) {
   
   source("assets/server/categoryView.R", local = TRUE)
   
+  source("assets/server/balanceView.R", local = TRUE)
+  
   })
   

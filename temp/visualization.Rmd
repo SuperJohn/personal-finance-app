@@ -1,0 +1,90 @@
+---
+title: "Visualizations"
+output: html_notebook
+---
+
+
+```{r, message=FALSE, warning=FALSE}
+setwd("~/Documents/dev/personal_finance")
+source("global.R", local = TRUE)
+```
+
+# Account Balances
+```{r, message=FALSE, warning=FALSE}
+balances <- balance_history %>%
+  clean_names() %>% 
+  mutate(balance = parse_number(balance)) %>% 
+  mutate(date = parse_date(date, format = "%m/%d/%y")) %>% 
+  filter(account != "4060 Sequoia Mortgage") %>% 
+  dplyr::arrange(desc(date)) %>%
+  dplyr::group_by(account) %>% 
+  mutate(roll_mean = zoo::rollmean(balance, k = 7, fill = balance))
+
+balances %>% head(10)
+
+balances.wide <- balances %>%
+  group_by(month, week, date, account) %>%
+  summarise(balance = max(balance)) %>%
+  dcast(month + week + date ~ account, value.var = "balance") %>%
+  clean_names()
+  
+balances.wide %>% head()
+
+colnames(balances.wide)
+```
+
+```{r}
+highchart() %>% 
+hc_chart(type = "column") %>% 
+hc_title(text = "MyGraph") %>% 
+hc_yAxis(title = list(text = "Weights")) %>% 
+hc_plotOptions(column = list(
+   dataLabels = list(enabled = FALSE),
+   stacking = "normal",
+   enableMouseTracking = FALSE)
+   ) %>% 
+hc_series(list(name="main checking",data=balances.wide$cpc_checking),
+        list(name="shared checking",data=balances.wide$shared_account),
+        list(name="johns checking",data=balances.wide$johns_personal),
+        list(name="savings",data=balances.wide$cpc_savings),
+        list(name="john retirement a",data=balances.wide$you_invest_trade),
+        list(name="john retirement b",data=balances.wide$you_invest_port_ret)
+        )
+```
+
+
+```{r}
+hchart(balances, "area", hcaes(x = date, y = roll_mean, group = account))
+```
+
+```{r}
+data(gapminder, package = "gapminder")
+gapminder_2007 <- gapminder::gapminder %>%
+filter(year == max(year)) %>%
+mutate(pop_mm = round(pop/1e6))
+
+gapminder.out <- data_to_hierarchical(gapminder_2007, c(continent, country), pop_mm)
+
+hchart(gapminder.out, type = "sunburst")
+hchart(gapminder.out, type = "treemap")
+
+### SUNBURST CHART ###
+transactions.data <- transactions %>% 
+  filter(month == as.Date("2020-09-01", format="%Y-%m-%d")) %>% 
+  filter(type == "Expense")
+
+transactions.dout <- data_to_hierarchical(transactions.data.grouped, c(group, category), amount)
+hchart(transactions.dout, type = "sunburst")
+
+### TREEMAP ###
+transactions.data.grouped <- transactions %>% 
+  filter(month == as.Date("2020-09-01", format="%Y-%m-%d")) %>% 
+  filter(type == "Expense") %>%
+  dplyr::group_by(group, category, month) %>%
+  dplyr::summarise(amount = round(sum(abs(amount)), 2))
+
+
+transactions.dout.grouped <- data_to_hierarchical(transactions.data.grouped, c(group,category), amount)
+hchart(transactions.dout.grouped, type = "treemap")
+```
+

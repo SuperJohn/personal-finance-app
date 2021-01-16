@@ -15,6 +15,7 @@ sidebar <- dashboardSidebar(
     menuItem(text = "Income View", tabName = "incomeView", icon = icon("th")),
     menuItem(text = "Budgets", tabName = "budgetView", icon = icon("building")),
     menuItem(text = "Category Spending", tabName = "categoryView", icon = icon("building")),
+    menuItem(text = "Balances", tabName = "balanceView", icon = icon("building")),
     menuItem('Dashboard Gallery', tabName = 'y', icon = icon('line-chart'),
              menuItem('Dashboard a',
                       tabName = 'a',

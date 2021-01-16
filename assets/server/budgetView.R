@@ -22,6 +22,23 @@ output$plotBudgetTree = shiny::renderPlot({
             )  
     )
 })
+transactions.data.grouped <- reactive({
+  transactions %>% 
+    filter(type == "Expense") %>%
+    dplyr::group_by(group, category, month) %>%
+    dplyr::summarise(amount = round(sum(abs(amount)), 2)) %>%
+    filter(month == as.Date(input$budgetMonthSelect)) %>%
+    data_to_hierarchical(group_vars = c(group,category), size_var = amount)
+})
+
+output$plotBudgetTreeMap = renderHighchart({
+    hchart(transactions.data.grouped(), type = "treemap") # %>%
+    # hc_exporting(enabled = TRUE) %>% 
+    # hc_tooltip(crosshairs = TRUE, backgroundColor = "#FCFFC5", shared = TRUE, borderWidth = 2) %>%
+    # hc_title(text="Time series plot of Inflation Rates", align="center") %>%
+    # hc_subtitle(text="Data Source: IMF", align="center") %>%
+    # hc_add_theme(hc_theme_elementary()) 
+})
 
 # BUDGET WIDE
 budgetTable <- budgets_long %>%

@@ -19,6 +19,7 @@ suppressMessages(library(d3Dashboard))
 suppressMessages(library(htmlwidgets))
 suppressMessages(library(htmltools))
 suppressMessages(library(pivottabler))
+suppressMessages(library(forecast))
 
 # Options -----------------------------------------------------------------
 options(scipen = 999)             # Disables scientific notation
@@ -26,15 +27,15 @@ options(scipen = 999)             # Disables scientific notation
 source("config.R", local = TRUE)
 
 # Load data ---------------------------------------------------------------
-tiller_categories_data <- read_delim("data/Tiller Personal Finance - Categories.tsv", "\t", escape_double = FALSE, locale = locale(), trim_ws = TRUE)
-tiller_transactions <- read_csv("data/Tiller Personal Finance - Transactions.csv")
+tiller_categories_data <- read_csv("data/categories.csv")
+tiller_transactions <- read_csv("data/transactions.csv")
+balance_history <- read_csv("data/balance_history.csv")
 john_amazon_items <- read_csv("data/amazon_transactions_2021.csv")
 sarah_amazon_items <- read_csv("data/sarah_amazon_items.csv")
 
 # run script that defines datasets used throughout application
 source("functions/formats.R", local = TRUE)
-source("functions/dataLoader.R", local = TRUE)
-
+suppressWarnings(source("functions/dataLoader.R", local = TRUE))
 # load script to create bullet graphs
 source("assets/ui/bulletGraph.R", local = TRUE) # bulletgraph()
 source("assets/ui/Rbulletgraph.R", local = TRUE) # bullet.graph(incidents) 

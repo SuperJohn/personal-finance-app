@@ -28,3 +28,8 @@ budget.measures <- list("None" = "None",
                         "% of Transactions" = "% of Transactions",
                         "Total Spend"  = "Total Spend",
                         "% of Total Spend" = "% of Total Spend")
+
+### INCOME VIEW ### 
+
+income.plots <- c("Income Events YTD", "Total Income YTD", "Income By Source YTD")
+income.plots.selected <- c("Income Events YTD")
