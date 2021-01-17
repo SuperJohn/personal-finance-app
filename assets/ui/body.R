@@ -7,6 +7,7 @@ body <- dashboardBody(
       tabItem(tabName = "incomeView", source("assets/ui/incomeView.R", local = TRUE)[1]),
       tabItem(tabName = "budgetView", source("assets/ui/budgetView.R", local = TRUE)[1]),
       tabItem(tabName = "categoryView", source("assets/ui/categoryView.R", local = TRUE)[1]),
+      tabItem(tabName = "balanceView", source("assets/ui/balanceView.R", local = TRUE)[1]),
       tabItem(tabName = "amazonTransactionsView", source("assets/ui/amazonTransactionsView.R", local = TRUE)[1]),
       tabItem(tabName = "devRef", source("assets/ui/devRef.R", local = TRUE)[1]),
       tabItem(tabName = "releaseNotes", source("assets/ui/releaseNotes.R", local = TRUE)[1]),

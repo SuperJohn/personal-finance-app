@@ -1,8 +1,18 @@
+income.mtd <- reactive({
+  total <-  transactions %>%
+    filter(month == input$incomeMonthSelect) %>%
+    filter(type == "Income") %>% 
+    summarise(total = sum(amount)) 
+  total[[1]]
+})
+library(data.table)
+# transactions %>%
+#   mutate(rollmeanz = rollmean(d, 3))
 
 ### TAB-PANELS ###
 output$progressBox <- renderInfoBox({
   infoBox(
-    "Income Past 30 Days", "$174,031", icon = icon("list"),
+    "Income Past 30 Days", income.mtd(), icon = icon("list"),
     color = "purple"
   )
 })
