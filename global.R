@@ -25,13 +25,14 @@ suppressMessages(library(forecast))
 options(scipen = 999)             # Disables scientific notation
 
 source("config.R", local = TRUE)
+source("settings.R", local = TRUE)
 
 # Load data ---------------------------------------------------------------
-tiller_categories_data <- read_csv("data/categories.csv")
-tiller_transactions <- read_csv("data/transactions.csv")
-balance_history <- read_csv("data/balance_history.csv")
-john_amazon_items <- read_csv("data/amazon_transactions_2021.csv")
-sarah_amazon_items <- read_csv("data/sarah_amazon_items.csv")
+tiller_categories_data <- read_csv("data/categories.csv", col_types = category_col_types)
+tiller_transactions <- read_csv("data/transactions.csv", col_types = transactions_col_types)
+balance_history <- read_csv("data/balance_history.csv", col_types = balance_history_col_types)
+john_amazon_items <- read_csv("data/amazon_transactions_2021.csv", col_types = amazon_orders_col_types)
+sarah_amazon_items <- read_csv("data/sarah_amazon_items.csv", col_types = amazon_orders_col_types)
 
 # run script that defines datasets used throughout application
 source("functions/formats.R", local = TRUE)

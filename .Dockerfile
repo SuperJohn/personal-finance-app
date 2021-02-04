@@ -1,18 +1,19 @@
-FROM rocker/tidyverse:latest
+FROM rocker/shinyverse:latest
+
 WORKDIR ..
 COPY . /home/rstudio
 
-## Install rstan (downloads and builds all dependencies)
-## Make R the default
-# CMD [”R”]
+RUN R -e 'install.packages("shiny", "renv")'
+COPY . /.
+EXPOSE 8787 3838 5249
+ENV PASSWORD = $PASSWORD
+CMD R -e 'renv::restore()'
+CMD R -e 'shiny::runApp("global.R", port = 3838, host = "0.0.0.0")'
 
-ENV PASSWORD='Sandy319'
-PORT 8787:8787
-PORT 3838:3838
-PORT 5249:5249
+COPY shiny-server.conf  /etc/shiny-server/shiny-server.conf
+COPY /app /srv/shiny-server/
 
-RUN docker run --rm -it --name personal-finance -p 8787:8787 rocker/tidyverse:latest \
-    -p 8787:8787 \
-    -p 3838:3838 \
-    -p 5249:5249 \
-    -v ./:/home/rstudio/
+# Allow permissions
+RUN chown -R shiny:shiny /srv/shiny-server
+
+# CMD ["/usr/bin/shiny-server.sh"]

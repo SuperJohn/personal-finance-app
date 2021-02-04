@@ -12,5 +12,15 @@ shinyServer(function(input, output, session) {
   
   source("assets/server/balanceView.R", local = TRUE)
   
+  
+  # Generate Data
+  transactionsData <- eventReactive(input$monthSelectInput, {
+    dataGrabber(type_selected = input$typeSelectInput,
+                group_selected = input$groupSelectInput,
+                category_selected = input$categorySelectInput,
+                month_selected = input$monthSelectInput
+                )
+    })
+  
   })
   

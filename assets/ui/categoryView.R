@@ -24,6 +24,9 @@ mainPanel(
     
     box(title = "Category Spending", status = "primary", solidHeader = TRUE, width = 12, 
         tabsetPanel(
+          tabPanel("Category Pivot",
+                   pivottablerOutput('categoryPivot')
+                   ),
           tabPanel("Category Treemap",
                plotOutput("plotCategoryTree")
           ),

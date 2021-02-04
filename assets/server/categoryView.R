@@ -42,3 +42,32 @@ bullet.data$measure <- fct_reorder(bullet.data$measure, bullet.data$value)
 output$test_plot = shiny::renderPlot({
   bullet.graph(bullet.data) 
 })
+
+### START CODE FOR PIVOT-TABLES ###
+categoryPivotData <- reactive({
+  transactions %>% 
+    filter(date >= transaction.months[[input$monthsDisplayInput]]) %>%
+    mutate(yearMonth = format(as.Date(month), format="%m-%y")) %>% 
+    arrange(date)
+})
+
+output$categoryPivot <- renderPivottabler({
+  pt <- PivotTable$new()
+  pt$addData(categoryPivotData())
+  
+  pt$addRowDataGroups("type")
+  pt$addRowDataGroups("group")
+  pt$addRowDataGroups("category")
+  pt$addColumnDataGroups("year", addTotal=FALSE)
+  pt$addColumnDataGroups("yearMonth", addTotal=FALSE)
+  
+  pt$defineCalculation(calculationName="totalSpend",
+                       caption="Total Spend",
+                       summariseExpression="sum(amount, na.rm = TRUE)", format="%.0f")
+  
+  # generate pivot tabler
+  pt$evaluatePivot()
+  pt$renderPivot()
+  pivottabler(pt)
+  
+})

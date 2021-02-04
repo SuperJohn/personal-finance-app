@@ -1,6 +1,25 @@
 # setwd("~/Documents/dev/personal_finance")
 # source("global.R", local = TRUE)
 
+dataGrabber <- function(type_selected = transactionsView.type.default,
+                        group_selected = transactionsView.group.default,
+                        category_selected = transactionsView.category.default,
+                        month_selected = transaction.months.max) {
+  
+  currentDate <- as.Date(format(Sys.Date(), "%Y-%m-%d"))
+  
+  transactions <- tiller_transactions %>% 
+    janitor::clean_names() %>%
+    left_join(category_lookup_table, by = "category") %>%
+    mutate(date = mdy(date), month = mdy(month), week = mdy(week)) %>%
+    mutate(category = as_factor(category), group = as_factor(group), type = as_factor(type), year = year(date)) %>%
+    mutate(amount = parse_number(str_remove(amount, regex("\\$", ignore_case = TRUE)))) %>%
+    dplyr::select(c(type, group, category, year, month, week, date, amount, description)) # %>% 
+    # filter(date >= transaction.months[[month_selected]])
+    # filter(date >= month_selected)
+  
+}
+
 ### BUDGETS ###
 budgets_long <- tiller_categories_data %>%
   select(-`Hide From Reports`) %>%
@@ -17,7 +36,7 @@ budgets_long <- tiller_categories_data %>%
 
 budgets_wide <- budgets_long %>%
   select(category, group, type, month, amount) %>%
-  dcast(category + group + type ~ month, value.var = "amount") %>%
+  reshape2::dcast(category + group + type ~ month, value.var = "amount") %>%
   arrange(-`2020-12-01`)
 
 category_lookup_table <- budgets_wide %>%
@@ -26,13 +45,7 @@ category_lookup_table <- budgets_wide %>%
 
 
 ### TILLER TRANSACTIONS ###
-transactions <- tiller_transactions %>% 
-  janitor::clean_names() %>%
-  left_join(category_lookup_table, by = "category") %>%
-  mutate(date = mdy(date), month = mdy(month), week = mdy(week)) %>%
-  mutate(category = as_factor(category), group = as_factor(group), type = as_factor(type), year = year(date)) %>%
-  mutate(amount = parse_number(str_remove(amount, regex("\\$", ignore_case = TRUE)))) %>%
-  dplyr::select(c(type, group, category, year, month, week, date, amount, description)) 
+
 
 transactions_monthly <- transactions %>% 
   mutate(month_num = month(as.Date(date)), year = year(date)) %>%
@@ -66,7 +79,7 @@ balances <- balance_history %>%
 balances.wide <- balances %>%
   group_by(month, week, date, account) %>%
   summarise(balance = max(balance)) %>%
-  dcast(month + week + date ~ account, value.var = "balance") %>%
+  reshape2::dcast(month + week + date ~ account, value.var = "balance") %>%
   clean_names()
 
 ### AMAZON TRANSACTIONS ###

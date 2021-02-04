@@ -9,7 +9,8 @@ mainPanel(
   
   fluidRow(
     box(title = "Account Balances", status = "primary", solidHeader = TRUE, width = 12, 
-        highchartOutput("account.balance.plot")
+        highchartOutput("accountBalancePlot")
+        # highchartOutput("plotBudgetTreeMap")
     )
   )
   

@@ -5,3 +5,5 @@
 data/*
 .idea
 rsconnect/*
+incident-total-events.pdf
+incident-total-events-pct.pdf

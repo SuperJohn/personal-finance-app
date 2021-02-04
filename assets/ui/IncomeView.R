@@ -1,4 +1,3 @@
-
 mainPanel(
 
   ### TAB-PANELS ###
@@ -23,10 +22,11 @@ mainPanel(
   
   fluidRow(
     ### INCOME CHART ###
-    box(title = "Income Events", status = "primary", solidHeader = TRUE, width = 12, 
+    box(title = "Income Events", status = "primary", solidHeader = TRUE, width = 12,
       plotOutput("plot_income_events_last6mo")
       )
-    ), 
+    ),
+  
   fluidRow(
     box(title = "Income Transactions", status = "primary", solidHeader = TRUE, width = 12, 
       DT::dataTableOutput("incomeTransactions")

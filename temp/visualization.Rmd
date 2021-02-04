@@ -17,7 +17,10 @@ balances <- balance_history %>%
   mutate(date = parse_date(date, format = "%m/%d/%y")) %>% 
   filter(account != "4060 Sequoia Mortgage") %>% 
   dplyr::arrange(desc(date)) %>%
-  dplyr::group_by(account) %>% 
+  dplyr::group_by(account, date, month, week) %>% 
+  dplyr::summarise(balance = max(balance)) %>%
+  unique() %>% 
+  group_by(account) %>% dplyr::arrange(desc(date)) %>%
   mutate(roll_mean = zoo::rollmean(balance, k = 7, fill = balance))
 
 balances %>% head(10)
@@ -54,7 +57,10 @@ hc_series(list(name="main checking",data=balances.wide$cpc_checking),
 
 
 ```{r}
-hchart(balances, "area", hcaes(x = date, y = roll_mean, group = account))
+hchart(balances, "area", hcaes(x = date, y = roll_mean, group = account)) 
+
+hchart(balances, "area", hcaes(x = date, y = roll_mean, group = account)) %>%
+  hc_plotOptions(area = list(stacking = "normal"))
 ```
 
 ```{r}
@@ -86,5 +92,9 @@ transactions.data.grouped <- transactions %>%
 
 transactions.dout.grouped <- data_to_hierarchical(transactions.data.grouped, c(group,category), amount)
 hchart(transactions.dout.grouped, type = "treemap")
+```
+```{r}
+library(skimr)
+skim(transactions)
 ```
 

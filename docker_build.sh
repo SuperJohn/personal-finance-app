@@ -1,1 +1,1 @@
-docker build --rm -f "Dockerfile" -t pdrsuite:happy-squirrel "."
+docker build --rm -f "Dockerfile" -t personal_finance:happy-squirrel "."
