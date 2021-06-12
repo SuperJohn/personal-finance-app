@@ -1,5 +1,5 @@
-# setwd("~/Documents/dev/personal_finance")
-# source("global.R", local = TRUE)
+setwd("~/Documents/dev/personal_finance")
+source("global.R", local = TRUE)
 
 dataGrabber <- function(type_selected = transactionsView.type.default,
                         group_selected = transactionsView.group.default,
@@ -69,7 +69,7 @@ act_vs_est_monthly <- budgets_long  %>%
 # melt(id = c("Category", "Group", "Type"), variable.name = "date", value.name = "amount") %>%
 balances <- balance_history %>%
   clean_names() %>% 
-  mutate(balance = parse_number(balance)) %>% 
+  mutate(balance = parse_number(str_remove(balance, regex("\\$", ignore_case = TRUE)))) %>%
   mutate(date = parse_date(date, format = "%m/%d/%y")) %>% 
   filter(account != "4060 Sequoia Mortgage") %>% 
   dplyr::arrange(desc(date)) %>%

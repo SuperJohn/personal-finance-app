@@ -13,27 +13,19 @@ source("global.R", local = TRUE)
 ```{r, message=FALSE, warning=FALSE}
 balances <- balance_history %>%
   clean_names() %>% 
-  mutate(balance = parse_number(balance)) %>% 
+  mutate(balance = parse_number(str_remove(balance, regex("\\$", ignore_case = TRUE)))) %>%
   mutate(date = parse_date(date, format = "%m/%d/%y")) %>% 
   filter(account != "4060 Sequoia Mortgage") %>% 
   dplyr::arrange(desc(date)) %>%
-  dplyr::group_by(account, date, month, week) %>% 
-  dplyr::summarise(balance = max(balance)) %>%
-  unique() %>% 
-  group_by(account) %>% dplyr::arrange(desc(date)) %>%
+  dplyr::group_by(account) %>% 
   mutate(roll_mean = zoo::rollmean(balance, k = 7, fill = balance))
-
-balances %>% head(10)
 
 balances.wide <- balances %>%
   group_by(month, week, date, account) %>%
   summarise(balance = max(balance)) %>%
-  dcast(month + week + date ~ account, value.var = "balance") %>%
+  reshape2::dcast(month + week + date ~ account, value.var = "balance") %>%
   clean_names()
-  
-balances.wide %>% head()
 
-colnames(balances.wide)
 ```
 
 ```{r}
