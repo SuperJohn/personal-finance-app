@@ -1,0 +1,34 @@
+---
+title: "Google Sheets"
+author: "John Houghton"
+date: "2/4/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, message=FALSE, warning=FALSE}
+setwd("~/Documents/dev/personal_finance")
+source("global.R", local = TRUE)
+```
+
+```{r cars}
+library(googlesheets4)
+suppressMessages(library(dplyr))
+
+
+read_sheet("1ek3bZQm6YewCk1kU3GkF4oPniKSkBDRORpzaM8ZysjM", sheet = "Transactions")
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+sheet_names(gs)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

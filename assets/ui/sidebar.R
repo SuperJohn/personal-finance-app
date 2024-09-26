@@ -9,6 +9,10 @@ sidebar <- dashboardSidebar(
                  separator = " to ",
                  width = NULL,
                  autoclose = TRUE),
+  selectInput("monthSelectInput", label = "Select Transaction Month",
+              choices = c(transaction.months),
+              selected = max(budget.months), multiple = FALSE),
+  
   sidebarMenu(
     HTML("<li class='header'>DASHBOARDS/REPORTS</li>"),
     menuItem(text = "Transactions View", tabName = "transactionsView", icon = icon("th")),
